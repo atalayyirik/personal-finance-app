@@ -4,6 +4,10 @@
   "main": "src/main.js",
   "scripts": {
     "start": "node scripts/start.js",
+    "start:headless": "node scripts/reporter-headless.js",
+    "headless:install": "node scripts/launchd.js install",
+    "headless:uninstall": "node scripts/launchd.js uninstall",
+    "headless:status": "node scripts/launchd.js status",
     "lint": "echo 'No lint configured'"
   },
   "keywords": [],

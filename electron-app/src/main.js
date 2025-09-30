@@ -9,6 +9,7 @@ const fs = require('fs');
 const yaml = require('js-yaml');
 const storage = require('./storage');
 const { initReporter, rescheduleReporter } = require('./reporter');
+const nodemailer = require('nodemailer');
 
 const jobs = new Map();
 let jobSeq = 0;
@@ -231,6 +232,26 @@ function parseNumber(value) {
   if (value === null || value === undefined || value === '') return null;
   const num = Number(value);
   return Number.isFinite(num) ? num : null;
+}
+
+function buildMailTransport(settings) {
+  if (!settings) return null;
+  try {
+    const transportConfig = {
+      host: settings.smtp_host,
+      port: settings.smtp_port || 587,
+      secure: Number(settings.smtp_port) === 465,
+    };
+    if (settings.smtp_username && settings.smtp_password) {
+      transportConfig.auth = {
+        user: settings.smtp_username,
+        pass: settings.smtp_password,
+      };
+    }
+    return nodemailer.createTransport(transportConfig);
+  } catch (err) {
+    return null;
+  }
 }
 
 function normaliseDate(value) {
@@ -505,6 +526,34 @@ ipcMain.handle('reporter:save-settings', (_event, payload) => {
   const saved = storage.saveReporterSettings(payload || {});
   rescheduleReporter();
   return saved;
+});
+
+ipcMain.handle('reporter:send-test', async () => {
+  const settings = storage.getReporterSettings();
+  if (!settings.email_address) {
+    throw new Error('Bildirim e-posta adresi gerekli.');
+  }
+  if (!settings.smtp_host) {
+    throw new Error('SMTP Host gerekli.');
+  }
+
+  const transporter = buildMailTransport(settings);
+  if (!transporter) {
+    throw new Error('SMTP transport oluşturulamadı.');
+  }
+
+  try { await transporter.verify(); } catch (_) {}
+
+  const from = settings.from_address || settings.smtp_username || settings.email_address;
+  const to = settings.email_address;
+  const now = new Date().toISOString();
+  await transporter.sendMail({
+    from,
+    to,
+    subject: 'Test: Personal Finance Reporter',
+    text: `Bu bir test e-postasıdır. Gönderim zamanı: ${now}`,
+  });
+  return { ok: true, to };
 });
 
 ipcMain.handle('chart:generate', async (_event, payload) => {

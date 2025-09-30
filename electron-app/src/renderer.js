@@ -967,6 +967,11 @@ function buildReporterView() {
   saveBtn.className = 'primary';
   saveBtn.textContent = 'Ayarları Kaydet';
 
+  const testBtn = document.createElement('button');
+  testBtn.type = 'button';
+  testBtn.className = 'secondary';
+  testBtn.textContent = 'Test e-postası gönder';
+
   const lastRunInfo = document.createElement('p');
   lastRunInfo.className = 'reporter-last-run';
   lastRunInfo.textContent = 'Son çalıştırma: -';
@@ -981,6 +986,7 @@ function buildReporterView() {
   settingsForm.appendChild(fromField);
   settingsForm.appendChild(channelGroup);
   settingsForm.appendChild(saveBtn);
+  settingsForm.appendChild(testBtn);
   settingsForm.appendChild(lastRunInfo);
 
   settingsCard.appendChild(settingsTitle);
@@ -1154,6 +1160,16 @@ function buildReporterView() {
       setStatus('success', 'Reporter ayarları güncellendi.');
     } catch (err) {
       setStatus('error', err && err.message ? err.message : 'Ayarlar kaydedilemedi.');
+    }
+  });
+
+  testBtn.addEventListener('click', async () => {
+    try {
+      setStatus('info', 'Test e-postası gönderiliyor...');
+      await window.pythonBridge.sendReporterTestEmail();
+      setStatus('success', 'Test e-postası gönderildi. (Spam klasörünü de kontrol edin)');
+    } catch (err) {
+      setStatus('error', err && err.message ? err.message : 'Test e-postası gönderilemedi.');
     }
   });
 

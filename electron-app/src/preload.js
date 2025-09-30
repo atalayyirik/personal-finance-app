@@ -17,6 +17,7 @@ contextBridge.exposeInMainWorld('pythonBridge', {
   generateChart: (symbol) => ipcRenderer.invoke('chart:generate', { symbol }),
   getReporterSettings: () => ipcRenderer.invoke('reporter:get-settings'),
   saveReporterSettings: (config) => ipcRenderer.invoke('reporter:save-settings', config),
+  sendReporterTestEmail: () => ipcRenderer.invoke('reporter:send-test'),
   onOutput: (callback) => {
     const listener = (_, data) => callback(data);
     ipcRenderer.on('python:output', listener);
