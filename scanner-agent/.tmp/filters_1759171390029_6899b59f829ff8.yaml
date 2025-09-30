@@ -1,0 +1,41 @@
+momentum:
+  enable_stochrsi: true
+  stochrsi_len: 14
+  stochrsi_k: 3
+  stochrsi_d: 3
+  stochrsi_max: 0.3
+universe:
+  min_price: 5
+  max_price: 9999
+volume:
+  avg_window_days: 50
+  min_avg_volume: 500000
+  min_avg_dollar_vol: 3000000
+fundamentals:
+  market_cap_min: 3000000000
+  market_cap_max: 10000000000000
+  beta_min_5y: 1
+  ytd_min_pct: -50
+  ytd_max_pct: 50
+  require_ytd: false
+  analyst_ratings_allow:
+    - Strong Buy
+    - Buy
+  require_analyst_rating: false
+beta:
+  benchmark: SPY
+  years: 3
+  method: daily_ols
+  min_points: 500
+  winsor_pct: 0.01
+options:
+  include_earnings: true
+  earnings_provider: yahoo
+  quiet_warnings: true
+  analyst_ratings_provider: yahoo
+trend:
+  ma_mid: 50
+  ma_slow: 200
+  enable_ma_cross_filter: true
+  ma_cross_lookahead_days: 20
+  ma_cross_max_gap_pct: 3

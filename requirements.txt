@@ -1,0 +1,11 @@
+pandas
+PyYAML
+requests
+dotenv
+rich
+mplfinance
+yfinance
+ib-insync
+python-dotenv
+pytz
+six
