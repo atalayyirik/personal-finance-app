@@ -163,6 +163,7 @@ async function main() {
     : defaultUserData;
 
   fs.mkdirSync(userDataPath, { recursive: true });
+  process.env.WORKBENCH_USER_DATA = userDataPath;
 
   // Minimal app shim for storage.initStorage
   const appShim = { getPath: (key) => {
@@ -205,4 +206,3 @@ main().catch((err) => {
   console.error('[headless] Başlatma hatası:', err && err.message ? err.message : err);
   process.exit(1);
 });
-

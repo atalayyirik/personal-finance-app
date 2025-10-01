@@ -21,6 +21,16 @@ const filtersPath = path.resolve(scannerDir, 'filters.yaml');
 
 const scriptsDir = path.resolve(repoRoot, 'electron-app', 'scripts');
 
+const defaultUserDataPath = path.resolve(repoRoot, 'electron-app', '.user-data');
+const userDataPath = (process.env.WORKBENCH_USER_DATA && process.env.WORKBENCH_USER_DATA.trim())
+  ? process.env.WORKBENCH_USER_DATA.trim()
+  : defaultUserDataPath;
+fs.mkdirSync(userDataPath, { recursive: true });
+process.env.WORKBENCH_USER_DATA = userDataPath;
+if (typeof app.setPath === 'function') {
+  app.setPath('userData', userDataPath);
+}
+
 const QUOTE_PROVIDERS = ['polygon', 'yahoo'];
 
 const defaultPythonBin = detectDefaultPython();
